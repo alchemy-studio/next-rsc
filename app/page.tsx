@@ -2,7 +2,8 @@ import Counter from './_components/Counter';
 
 async function getEcho() {
   // Note: Using the full URL because this fetch is happening on the server.
-  const res = await fetch('http://localhost:3001/api/echo?message=Hello from Server Component!');
+  // With older Next.js versions, it's safer to use the absolute URL.
+  const res = await fetch('http://localhost:3000/api/echo?message=Hello from Server Component!');
   if (!res.ok) {
     return { echo: 'Failed to fetch' };
   }
