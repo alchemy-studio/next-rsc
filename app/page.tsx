@@ -1,24 +1,50 @@
-import Counter from './_components/Counter';
+import UserForm from './_components/UserForm';
+import clientPromise from '@/lib/mongodb';
+import { User } from '@/lib/schemas';
 
-async function getEcho() {
-  // Note: Using the full URL because this fetch is happening on the server.
-  // With older Next.js versions, it's safer to use the absolute URL.
-  const res = await fetch('http://localhost:3000/api/echo?message=Hello from Server Component!');
-  if (!res.ok) {
-    return { echo: 'Failed to fetch' };
+// Add _id to the User type for the frontend
+type UserWithId = User & { _id: string };
+
+async function getUsers(): Promise<UserWithId[]> {
+  try {
+    const client = await clientPromise;
+    const db = client.db("testdb");
+    const users = await db
+      .collection("users")
+      .find({})
+      .limit(10)
+      .toArray();
+    // Convert ObjectId to string for serialization
+    return JSON.parse(JSON.stringify(users));
+  } catch (e) {
+    console.error(e);
+    return [];
   }
-  return res.json();
 }
 
 export default async function Home() {
-  const data = await getEcho();
+  const users = await getUsers();
 
   return (
-    <main>
-      <h1>Server + Client</h1>
-      <Counter />
-      <h2>Echo from API:</h2>
-      <p>{data.echo}</p>
+    <main style={{ padding: '2rem' }}>
+      <h1>MongoDB User Management</h1>
+      
+      <UserForm />
+
+      <hr style={{ margin: '2rem 0' }} />
+
+      <h2>Current Users in DB</h2>
+      {users.length > 0 ? (
+        <ul>
+          {users.map((user) => (
+            <li key={user._id}>
+              {user.name} ({user.email})
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No users found. Add one above!</p>
+      )}
     </main>
   );
 }

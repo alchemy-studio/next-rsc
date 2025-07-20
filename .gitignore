@@ -10,6 +10,9 @@
 # local env files
 .env*.local
 
+# Docker
+mongo-data/
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
