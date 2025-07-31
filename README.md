@@ -38,6 +38,36 @@ This will return a JSON response like:
 {"echo":"YourMessageHere"}
 ```
 
+### Accessing the Users API
+
+This project includes a set of API endpoints for managing users.
+
+- **GET /api/users**
+
+  Retrieves a list of users.
+
+  ```bash
+  curl "http://localhost:3001/api/users"
+  ```
+
+- **POST /api/users**
+
+  Creates a new user.
+
+  ```bash
+  curl -X POST "http://localhost:3001/api/users" \
+       -H "Content-Type: application/json" \
+       -d '{"name": "Jane Doe", "email": "jane.doe@example.com"}'
+  ```
+
+- **GET /api/users/{id}**
+
+  Retrieves a single user by their ID.
+
+  ```bash
+  curl "http://localhost:3001/api/users/your-user-id"
+  ```
+
 ---
 
 ## Architecture Overview

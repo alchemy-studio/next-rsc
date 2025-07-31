@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { userSchema } from '@/lib/schemas';
+import { userSchema, User } from '@/lib/schemas';
+import { Collection } from 'mongodb';
 
 export async function GET() {
   try {
@@ -32,9 +33,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validation.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    const { name, email } = validation.data;
+    const newUser: User = validation.data;
+    const usersCollection: Collection<User> = db.collection<User>("users");
 
-    const result = await db.collection("users").insertOne({ name, email });
+    const result = await usersCollection.insertOne(newUser);
 
     return NextResponse.json({ message: "User created", userId: result.insertedId }, { status: 201 });
 
